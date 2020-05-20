@@ -1,24 +1,46 @@
 from django.db import models
 from django.utils import timezone
 # Create your models here.
+
+class User(models.Model):
+    id = models.IntegerField(primary_key=True)
+    username = models.TextField(max_length=64, null=False)
+    password = models.TextField(max_length=64, null=False)
+    email = models.TextField(max_length=64, unique=True, null=False)
+    class Meta:
+        app_label = 'theApp'
+
 class Order(models.Model):
-    id = models.IntegerField(primary_key=true)
+    id = models.IntegerField(primary_key=True)
     note = models.CharField(max_length=300)
     price = models.FloatField()
     payment_method = models.CharField(max_length=64)
     date = models.DateTimeField(default=timezone.now)
     est_delivery_time = models.CharField(max_length=64)
-
-class Complaint_Report(models.model):
+    class Meta:
+        app_label = 'theApp'
+class Complaint_Report(models.Model):
     order_id = models.ForeignKey(Order, on_delete=models.CASCADE)
     cust_id = models.ForeignKey(User, on_delete=models.CASCADE)
     subject = models.CharField(max_length=1023)
     status = models.CharField(max_length=64)
     class Meta:
         unique_together = [['order_id', 'cust_id']]
-
+        app_label = 'theApp'
 class Customer_Service_Employee(User):
     shift = models.CharField(max_length=64)
+    class Meta:
+        app_label = 'theApp'
+
+class Forum_Topic(models.Model):
+    topic_id = models.CharField(max_length=64, verbose_name="topic_id",primary_key=True)
+    date = models.DateTimeField(default=timezone.now) #netten baktım yanlış olabilir
+    title = models.CharField(max_length=64, verbose_name="title")
+    category = models.CharField(max_length=64, verbose_name="category")
+    no_of_entries = models.IntegerField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    class Meta():
+        app_label = 'theApp'
 
 class Forum_Entry(models.Model):
     topic_id = models.ForeignKey(Forum_Topic, on_delete=models.CASCADE)
@@ -26,6 +48,21 @@ class Forum_Entry(models.Model):
     text = models.CharField(max_length=10000)
     class Meta:
         unique_together = [['topic_id', 'date']]
+        app_label = 'theApp'
+
+class Courier(User):
+    city = models.TextField(max_length=64, null = False)
+    vehicle = models.TextField(max_length=64)
+    class Meta:
+        app_label = 'theApp'
+
+class Seller(User):
+    shop_name = models.TextField(max_length=64, unique=True, null=False)
+    rating = models.DecimalField(max_digits=3, decimal_places=1)
+    address = models.TextField(max_length=64, unique=True, null=False)
+    class Meta:
+        app_label = 'theApp'
+
 
 class Order_Delivery(models.Model):
     order_id = models.ForeignKey(Order, on_delete=models.CASCADE)
@@ -34,51 +71,8 @@ class Order_Delivery(models.Model):
     status = models.CharField(max_length=64)
     class Meta:
         unique_together = [['order_id', 'courier_id', 'seller_id']]
+        app_label = 'theApp'
 
-class Stocks(models.Model):
-    flower_id = models.ForeignKey(Flower, on_delete=models.CASCADE)
-    seller_id = models.ForeignKey(Seller, on_delete=models.CASCADE)
-    sold = models.IntegerField()
-    count = models.IntegerField()
-    class Meta:
-        unique_together = [['flower_id', 'seller_id']]\
-
-class Includes(models.Model):
-    flower_id = models.ForeignKey(Flower, on_delete=models.CASCADE)
-    order_id = models.ForeignKey(Order, on_delete=models.CASCADE)
-    amount = models.IntegerField()
-    class Meta:
-        unique_together = [['flowe_id', 'order_id']]
-
-class Faw_Flow(models.model):
-    cust_id = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    flower_id = models.ForeignKey(Flower, on_delete=models.CASCADE)
-    class Meta:
-        unique_together = [['cust_id', 'flower_id']]
-
-class User(models.Model):
-    id = models.IntegerField(primary_key=True)
-    username = models.TextField(max_length=64, null=False)
-    password = models.TextField(max_length=64, null=False)
-    email = models.TextField(max_length=64, unique=True, null=False)
-
-class User_Phone_Number(models.Model):
-    id = models.ForeignKey('User', on_delete=models.CASCADE)
-    phone_number = models.TextField(max_length=64,  null=False)
-    class Meta:
-        unique_together = [['id', 'phone_number']]
-
-class Customer(User):
-    
-
-class Seller(User):
-    shop_name = models.TextField(max_length=64, unique=True, null=False)
-    rating = models.DecimalField(max_digits=3, decimal_places=1)
-    address = models.TextField(max_length=64, unique=True, null=False)
-
-class Courier(User):
-    city = models.TextField(max_length=64, null = False)
-    vehicle = models.TextField(max_length=64)
 
 class Flower(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -89,19 +83,63 @@ class Flower(models.Model):
     photo_id = models.IntegerField(null = False)
     description = models.TextField(max_length=256)
     category = models.CharField(max_length=64, verbose_name="category")
+    class Meta:
+        app_label = 'theApp'
+
+
+class Stocks(models.Model):
+    flower_id = models.ForeignKey(Flower, on_delete=models.CASCADE)
+    seller_id = models.ForeignKey(Seller, on_delete=models.CASCADE)
+    sold = models.IntegerField()
+    count = models.IntegerField()
+    class Meta:
+        unique_together = [['flower_id', 'seller_id']]
+        app_label = 'theApp'
+
+class Includes(models.Model):
+    flower_id = models.ForeignKey(Flower, on_delete=models.CASCADE)
+    order_id = models.ForeignKey(Order, on_delete=models.CASCADE)
+    amount = models.IntegerField()
+    class Meta:
+        unique_together = [['flowe_id', 'order_id']]
+        app_label = 'theApp'
+
+class Customer(User):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, parent_link=True)
+    bio = models.TextField(max_length=500, blank=True)
+    birth_date = models.DateField(null=True, blank=True)
+    class Meta:
+        app_label = 'theApp'
+
+
+class Faw_Flow(models.Model):
+    cust_id = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    flower_id = models.ForeignKey(Flower, on_delete=models.CASCADE)
+    class Meta:
+        unique_together = [['cust_id', 'flower_id']]
+        app_label = 'theApp'
+
+class User_Phone_Number(models.Model):
+    id = models.ForeignKey('User', on_delete=models.CASCADE)
+    phone_number = models.TextField(max_length=64,  null=False)
+    class Meta:
+        unique_together = [['id', 'phone_number']]
+        app_label = 'theApp'
+
+'''
+@receiver(post_save, sender=User)
+def update_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+    instance.profile.save()
+'''
 
 class Chocolate (models.Model):
     chocolate_type = models.CharField(max_length=64, verbose_name="chocolate_type",primary_key=True)
     price = models.FloatField()
     price = models.IntegerField()
-
-class Forum_topic (models.Model):
-    topic_id = models.CharField(max_length=64, verbose_name="topic_id",primary_key=True)
-    date = models.DateTimeField(default=timezone.now) #netten baktım yanlış olabilir
-    title = models.CharField(max_length=64, verbose_name="title")
-    category = models.CharField(max_length=64, verbose_name="category")
-    no_of_entries = models.IntegerField()
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    class Meta():
+        app_label = 'theApp'
 
 class Attached (models.Model):
     id = models.ForeignKey(Order, on_delete=models.CASCADE)
@@ -110,6 +148,7 @@ class Attached (models.Model):
     #FOREIGN KEY NASI PRIMARY OLACAK BUNA BAK
     class Meta():
         unique_together = [['id' , 'attached_type']]
+        app_label = 'theApp'
 
 class Fav_shop(models.Model):
 
@@ -118,6 +157,7 @@ class Fav_shop(models.Model):
     seller_id = models.ForeignKey(Seller, on_delete=models.CASCADE) 
     class Meta():
         unique_together = [['customer_id' , 'seller_id']]
+        app_label = 'theApp'
 
 
 class Category(models.Model):
@@ -125,4 +165,4 @@ class Category(models.Model):
     class Meta:
         verbose_name = 'Product Category'
         verbose_name_plural = 'Product Categories'
-
+        app_label = 'theApp'
