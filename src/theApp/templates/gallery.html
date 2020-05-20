@@ -1,0 +1,157 @@
+{% extends "base-2.html" %}
+{% load staticfiles %}
+
+{% block main %}
+
+<section class="module-small pb-0">
+
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-6 col-sm-offset-3">
+        <h2 class="module-title font-alt">Ürünler</h2>
+        <div class="module-subtitle font-serif"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-4">
+        <select id="categorySearch" class="form-control">
+          <option selected="selected">Tüm Kategoriler</option>
+
+          {% for category in categories %}
+          <option>{{category.name}}</option>
+          {% endfor %}
+
+        </select>
+      </div>
+
+      <div class="col-sm-8">
+        <div class="widget">
+          <form role="form">
+            <div class="search-box">
+              <!-- search box -->
+              {% csrf_token %}
+              <input  id='csrftoken' type='text' name='csrftoken' value="{{csrf_token}}" hidden='true'/>
+              <input id='productSearch' class="form-control" type="text" placeholder="Arama..."/>
+              <button class="search-btn" type="submit"><i class="fa fa-search"></i></button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<section class="module-small">
+  <div class="container">
+
+    <div id='results'>
+      <div class="row multi-columns-row">
+
+        {% for product in products %}
+        <div class="col-sm-6 col-md-4">
+          <div class="gallery-item">
+            <div class="gallery-image">
+              <a class="gallery" href="{{product.thumbnail|editLink}}" onclick='location.href="{% url "productCountUp" pk=product.pk %}"' title="{{product.title}}">
+                <img src="{{product.thumbnail|editLink}}" alt="Gallery Image 1"/>
+                <div class="gallery-caption">
+                  <div class="gallery-icon"><span class="icon-magnifying-glass"></span></div>
+                </div>
+              </a>
+            </div>
+            <br/><h2 class="post-title">{{product.title}}</h2>
+           	{% for category in product.categories.all %}{{category.name}} {% endfor %}
+            <div class="post-entry"><p>{{product.description}}</p></div>
+          </div>
+        </div>
+        {% if forloop.counter|remainderThree %}
+        </div>
+        <div class="row multi-columns-row">
+        {% endif %}
+        {% endfor %}
+
+      </div>
+      <div class="row">
+        <div class="col-sm-12 text-center">
+          <div class="pagination font-alt">
+            {% if products.has_other_pages %}
+              {% if products.has_previous %}
+                <a href="?page={{ products.previous_page_number }}"><i class="fa fa-angle-left"></i></a>
+                {% else %}
+                <a href="#"><i class="fa fa-angle-left"></i></a>
+              {% endif %}
+
+              {% for i in products.paginator.page_range %}
+                {% if products.number == i %}
+                  <a href="#">{{ i }}</a>
+                {% else %}
+                  <a class="active" href="?page={{ i }}">{{ i }}</a>
+                {% endif %}
+              {% endfor %}
+
+              {% if products.has_next %}
+                <a href="?page={{ products.next_page_number }}"><i class="fa fa-angle-right"></i></a>
+              {% else %}
+                <a href="#"><i class="fa fa-angle-right"></i></a>
+              {% endif %}
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<br/><br/><br/>
+
+{% endblock %}
+
+{% block script %}
+<script>
+
+  $(document).ready(function() {
+
+      $('#productSearch').on('keyup',function () {
+
+        $.ajax( {
+
+            type: "POST",
+            url: "/productSearch/",
+            data: {
+                    'productSearch' : $('#productSearch').val(),
+                    csrfmiddlewaretoken: $('#csrftoken').val()
+            },
+            success: function SearchSuccess(data, textStatus, jqXHR) {
+                     $('#results').html(data);
+            },
+            dataType: 'html'
+        });
+    });
+  });
+
+  $(document).ready(function() {
+
+      $('#categorySearch').on('change', function() {
+
+        $.ajax( {
+
+            type: "POST",
+            url: "/categorySearch/",
+            data: {
+                    'categorySearch' : $('#categorySearch').val(),
+                    csrfmiddlewaretoken: $('#csrftoken').val()
+            },
+            success: function SearchSuccess(data, textStatus, jqXHR) {
+                     $('#results').html(data);
+            },
+            dataType: 'html'
+        });
+    });
+  });
+
+</script>
+{% endblock %}

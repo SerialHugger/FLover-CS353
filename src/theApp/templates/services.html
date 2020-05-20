@@ -1,0 +1,44 @@
+{% extends "base-2.html" %}
+{% load staticfiles %}
+
+{% block main %}
+
+<section>
+  <div class="container">
+
+    {% for service in services %}
+    {% if service.thumbnailRight %}
+      <div class="row landing-image-text">
+        <div class="col-sm-6 col-sm-push-6"><img style="border-radius: 5%;" class="center-block" src="{{service.thumbnail|editLink}}" alt=""></div>
+        <div class="col-sm-6 col-sm-pull-6">
+          <h2 class="font-alt">{{service.title}}</h2>
+          <p>{{service.body|linebreaks}}</p>
+        </div>
+      </div>
+
+    {% else %}
+
+      <div class="row landing-image-text">
+        <div class="col-sm-6"><img class="center-block" style="border-radius: 5%;"  src="{{service.thumbnail|editLink}}" alt=""></div>
+        <div class="col-sm-6">
+          <h2 class="font-alt">{{service.title}}</h2>
+          <p class="font-serif">{{service.body|linebreaks}}</p>
+        </div>
+      </div>
+
+      {% endif %}
+      <hr>
+      {% endfor %}
+
+  </div>
+
+</section>
+
+<br/><br/><br/>
+<div class="text-center">
+  <a class="btn btn-border-d btn-circle" href="/contact">İletişime Geçin</a>
+</div>
+<br/><br/><br/>
+
+
+{% endblock %}

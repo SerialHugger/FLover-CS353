@@ -1,0 +1,155 @@
+{% extends "base-2.html" %}
+{% load staticfiles %}
+
+{% block main %}
+
+<section class="module-small pb-0">
+
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-6 col-sm-offset-3">
+        <h2 class="module-title font-alt">Projeler</h2>
+        <div class="module-subtitle font-serif"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-4">
+        <select id="projectTagSearch" class="form-control">
+          <option selected="selected">Tüm Kategoriler</option>
+
+          {% for tag in projectTags %}
+          <option>{{tag.name}}</option>
+          {% endfor %}
+
+        </select>
+      </div>
+
+      <div class="col-sm-8">
+        <div class="widget">
+          <form role="form">
+            <div class="search-box">
+              <!-- search box -->
+              {% csrf_token %}
+              <input  id='csrftoken' type='text' name='csrftoken' value="{{csrf_token}}" hidden='true'/>
+              <input id='projectSearch' class="form-control" type="text" placeholder="Arama..."/>
+              <button class="search-btn" type="submit"><i class="fa fa-search"></i></button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<section class="module-small pb-0">
+  <div class="container">
+
+    <div id="results">
+
+      <div class="row multi-columns-row">
+        {% for project in projects %}
+        <div class="col-sm-6 col-md-6 col-lg-6">
+          <div class="post">
+            <div class="post-thumbnail"><a href="/project/{{project.pk}}"><img src="{{project.photo1|editLink}}" alt="Blog-post Thumbnail"/></a></div>
+              <div class="post-header font-alt">
+                <h2 class="post-title"><a href="/project/{{project.pk}}">{{project.title}}</a></h2>
+                <div class="post-meta">{{project.createdDate|editDate}} | {% for tag in project.tags.all %}{{tag.name}} {% endfor %}
+                </div>
+              </div>
+              <div class="post-entry">
+                <p>{{project.description}}</p>
+              </div>
+          </div>
+        </div>
+        {% if forloop.counter|remainderTwo %}
+        </div>
+        <div class="row multi-columns-row">
+        {% endif %}
+        {% endfor %}
+      </div>
+
+      <div class="row">
+        <div class="col-sm-12 text-center">
+          <div class="pagination font-alt">
+            {% if projects.has_other_pages %}
+              {% if projects.has_previous %}
+                <a href="?page={{ projects.previous_page_number }}"><i class="fa fa-angle-left"></i></a>
+                {% else %}
+                <a href="#"><i class="fa fa-angle-left"></i></a>
+              {% endif %}
+
+              {% for i in projects.paginator.page_range %}
+                {% if projects.number == i %}
+                  <a href="#">{{ i }}</a>
+                {% else %}
+                  <a class="active" href="?page={{ i }}">{{ i }}</a>
+                {% endif %}
+              {% endfor %}
+
+              {% if projects.has_next %}
+                <a href="?page={{ projects.next_page_number }}"><i class="fa fa-angle-right"></i></a>
+              {% else %}
+                <a href="#"><i class="fa fa-angle-right"></i></a>
+              {% endif %}
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<br/><br/><br/>
+
+{% endblock %}
+
+{% block script %}
+<script>
+  $(document).ready(function() {
+
+      $('#projectSearch').on('keyup',function () {
+
+        $.ajax( {
+
+            type: "POST",
+            url: "/projectSearch/",
+            data: {
+                    'projectSearch' : $('#projectSearch').val(),
+                    csrfmiddlewaretoken: $('#csrftoken').val()
+            },
+            success: function SearchSuccess(data, textStatus, jqXHR) {
+                     $('#results').html(data);
+            },
+            dataType: 'html'
+        });
+    });
+  });
+
+  $(document).ready(function() {
+
+      $('#projectTagSearch').on('change', function() {
+
+        $.ajax( {
+
+            type: "POST",
+            url: "/projectTagSearch/",
+            data: {
+                    'projectTagSearch' : $('#projectTagSearch').val(),
+                    csrfmiddlewaretoken: $('#csrftoken').val()
+            },
+            success: function SearchSuccess(data, textStatus, jqXHR) {
+                     $('#results').html(data);
+            },
+            dataType: 'html'
+        });
+    });
+  });
+
+</script>
+{% endblock %}
