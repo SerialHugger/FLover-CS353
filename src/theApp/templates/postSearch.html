@@ -1,0 +1,38 @@
+{% for post in recentPosts %}
+<div class="post">
+  <div class="post-thumbnail"><a href="/post/{{post.pk}}"><img src="{{post.thumbnail|editLink}}" alt="Blog-post Thumbnail"/></div></a>
+  <div class="post-header font-alt">
+    <h2 class="post-title"><a href="/post/{{post.pk}}">{{post.title}}</a></h2>
+    <div class="post-meta">{{post.createdDate|editDate}} | {{post.viewCount}} Okuma | {% for tag in post.tags.all %}{{tag.name}} {% endfor %}
+    </div>
+  </div>
+  <div class="post-entry">
+    <p>{{post.description}}</p>
+  </div>
+  <div class="post-more"><a class="more-link" href="/post/{{post.pk}}">Devamını Oku</a></div>
+</div>
+{% endfor %}
+
+<div class="pagination font-alt">
+  {% if recentPosts.has_other_pages %}
+    {% if recentPosts.has_previous %}
+      <a href="?page={{ recentPosts.previous_page_number }}"><i class="fa fa-angle-left"></i></a>
+      {% else %}
+      <a href="#"><i class="fa fa-angle-left"></i></a>
+    {% endif %}
+
+    {% for i in recentPosts.paginator.page_range %}
+      {% if recentPosts.number == i %}
+        <a href="#">{{ i }}</a>
+      {% else %}
+        <a class="active" href="?page={{ i }}">{{ i }}</a>
+      {% endif %}
+    {% endfor %}
+
+    {% if recentPosts.has_next %}
+      <a href="?page={{ recentPosts.next_page_number }}"><i class="fa fa-angle-right"></i></a>
+    {% else %}
+      <a href="#"><i class="fa fa-angle-right"></i></a>
+    {% endif %}
+  {% endif %}
+</div>
