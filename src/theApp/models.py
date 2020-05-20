@@ -113,13 +113,16 @@ class Attached (models.Model):
 
 class Fav_shop(models.Model):
 
+
     customer_id = models.ForeignKey(Customer, on_delete=models.CASCADE) 
     seller_id = models.ForeignKey(Seller, on_delete=models.CASCADE) 
     class Meta():
         unique_together = [['customer_id' , 'seller_id']]
+
 
 class Category(models.Model):
     name = models.CharField(max_length=50, verbose_name="Ad")
     class Meta:
         verbose_name = 'Product Category'
         verbose_name_plural = 'Product Categories'
+
