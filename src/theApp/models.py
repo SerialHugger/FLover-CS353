@@ -3,7 +3,6 @@ from django.utils import timezone
 # Create your models here.
 
 class User(models.Model):
-    id = models.IntegerField(primary_key=True)
     username = models.TextField(max_length=64, null=False)
     password = models.TextField(max_length=64, null=False)
     email = models.TextField(max_length=64, unique=True, null=False)
@@ -101,7 +100,7 @@ class Includes(models.Model):
     order_id = models.ForeignKey(Order, on_delete=models.CASCADE)
     amount = models.IntegerField()
     class Meta:
-        unique_together = [['flowe_id', 'order_id']]
+        unique_together = [['flower_id', 'order_id']]
         app_label = 'theApp'
 
 class Customer(User):
@@ -120,10 +119,10 @@ class Faw_Flow(models.Model):
         app_label = 'theApp'
 
 class User_Phone_Number(models.Model):
-    id = models.ForeignKey('User', on_delete=models.CASCADE)
+    User_id = models.ForeignKey('User', on_delete=models.CASCADE)
     phone_number = models.TextField(max_length=64,  null=False)
     class Meta:
-        unique_together = [['id', 'phone_number']]
+        unique_together = [['User_id', 'phone_number']]
         app_label = 'theApp'
 
 '''
@@ -142,12 +141,12 @@ class Chocolate (models.Model):
         app_label = 'theApp'
 
 class Attached (models.Model):
-    id = models.ForeignKey(Order, on_delete=models.CASCADE)
+    Order_id = models.ForeignKey(Order, on_delete=models.CASCADE)
     attached_type = models.ForeignKey(Chocolate, on_delete=models.CASCADE)
     no_of_entries = models.IntegerField()
     #FOREIGN KEY NASI PRIMARY OLACAK BUNA BAK
     class Meta():
-        unique_together = [['id' , 'attached_type']]
+        unique_together = [['Order_id' , 'attached_type']]
         app_label = 'theApp'
 
 class Fav_shop(models.Model):
