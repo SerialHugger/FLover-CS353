@@ -88,6 +88,8 @@ class Flower(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     photo_id = models.IntegerField(null = False)
     description = models.TextField(max_length=256)
+    category = models.CharField(max_length=64, verbose_name="category")
+
 class Chocolate (models.Model):
     chocolate_type = models.CharField(max_length=64, verbose_name="chocolate_type",primary_key=True)
     price = models.FloatField()
@@ -109,9 +111,18 @@ class Attached (models.Model):
     class Meta():
         unique_together = [['id' , 'attached_type']]
 
-class Fav_shop():
+class Fav_shop(models.Model):
+
 
     customer_id = models.ForeignKey(Customer, on_delete=models.CASCADE) 
     seller_id = models.ForeignKey(Seller, on_delete=models.CASCADE) 
     class Meta():
         unique_together = [['customer_id' , 'seller_id']]
+
+
+class Category(models.Model):
+    name = models.CharField(max_length=50, verbose_name="Ad")
+    class Meta:
+        verbose_name = 'Product Category'
+        verbose_name_plural = 'Product Categories'
+
