@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block navigation %}
+<nav class="navbar navbar-custom navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#custom-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/index"><img src="{% static 'images/logo.png' %}"/></a>
+      <!-- Nevermind Here -->
+      <span class="navbar-brand text-right">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      </span>
+    </div>
+    <div class="collapse navbar-collapse" id="custom-collapse">
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="/index">ANASAYFA</a></li>
+        <li><a href="/gallery">ÜRÜNLERİMİZ</a></li>
+        <li><a href="/projects">PROJELERİMİZ</a></li>
+        <li><a href="/services">HİZMETLERİMİZ</a></li>
+        <!-- <li><a href="/blog">BLOG</a></li> -->
+        <li><a href="/about">HAKKIMIZDA</a></li>
+        <li><a href="/contact">İLETİŞİM</a></li>
+
+      </ul>
+    </div>
+  </div>
+</nav>
+{% endblock %}

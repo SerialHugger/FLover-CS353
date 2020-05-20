@@ -1,0 +1,52 @@
+<div class="row multi-columns-row">
+
+  {% for product in products %}
+  <div class="col-sm-6 col-md-3 col-lg-4">
+    <div class="gallery-item">
+      <div class="gallery-image">
+        <a class="gallery" href="{{product.thumbnail|editLink}}" onclick='location.href="{% url "productCountUp" pk=product.pk %}"' title="{{product.title}}">
+          <img src="{{product.thumbnail|editLink}}" alt="Gallery Image 1"/>
+          <div class="gallery-caption">
+            <div class="gallery-icon"><span class="icon-magnifying-glass"></span></div>
+          </div>
+        </a>
+      </div>
+      <br/><h2 class="post-title">{{product.title}}</h2>
+      {{product.viewCount}} Görüntülenme | {% for category in product.categories.all %}{{category.name}} {% endfor %}
+      <div class="post-entry"><p>{{product.description}}</p></div>
+    </div>
+  </div>
+  {% if forloop.counter|remainderThree %}
+  </div>
+  <div class="row multi-columns-row">
+  {% endif %}
+  {% endfor %}
+
+</div>
+<div class="row">
+  <div class="col-sm-12 text-center">
+    <div class="pagination font-alt">
+      {% if products.has_other_pages %}
+        {% if products.has_previous %}
+          <a href="?page={{ products.previous_page_number }}"><i class="fa fa-angle-left"></i></a>
+          {% else %}
+          <a href="#"><i class="fa fa-angle-left"></i></a>
+        {% endif %}
+
+        {% for i in products.paginator.page_range %}
+          {% if products.number == i %}
+            <a href="#">{{ i }}</a>
+          {% else %}
+            <a class="active" href="?page={{ i }}">{{ i }}</a>
+          {% endif %}
+        {% endfor %}
+
+        {% if products.has_next %}
+          <a href="?page={{ products.next_page_number }}"><i class="fa fa-angle-right"></i></a>
+        {% else %}
+          <a href="#"><i class="fa fa-angle-right"></i></a>
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
+</div>
