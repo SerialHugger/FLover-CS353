@@ -1,0 +1,168 @@
+      {% extends "base.html" %}
+      {% load static %}
+
+      {% block head %}
+
+      <style>
+      .social {color:#c2c2c2;}
+      .social:hover {color:white !important;}
+      </style>
+
+      {% endblock %}
+
+      {% block slider %}
+
+      <section class="home-section home-full-height" id="home">
+        <div class="hero-slider">
+          <ul class="slides">
+
+          </ul>
+        </div>
+      </section>
+
+      {% endblock %}
+
+      {% block main %}
+
+      <section class="module pb-0">
+        <div class="container">
+          <div class="row multi-columns-row">
+            <div class="col-md-3 col-sm-6 col-xs-12">
+              <div class="features-item">
+                <div class="features-icon"><span class="icon-pricetags"></span></div>
+                <h3 class="features-title font-alt">Bitki ve Ağaç Satışı</h3>
+                  Fidanlık ve seramızda üretimini yaptığımız mevsimlik bitkilerin yanı sıra, dış mekan, ağaç, çalı türü peyzaj uygulama projelerinde kullanılan bitkiler stoklarımızda ve teşhirde mevcuttur.
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 col-xs-12">
+              <div class="features-item">
+                <div class="features-icon"><span class="icon-presentation"></span></div>
+                <h3 class="features-title font-alt">Proje Danışmanlığı</h3>
+                  Firma olarak deneyimli proje ekibimizle doğru ihtiyaç analizi, etkili planlama ve yaratıcı tasarım süreçlerini başarıyla tamamlayarak projeler ortaya koyuyuoruz.
+              </div>
+            </div>
+            <div class="col-md-3 col-sm-6 col-xs-12">
+              <div class="features-item">
+                <div class="features-icon"><span class="icon-tools"></span></div>
+                <h3 class="features-title font-alt">Peyzaj Uygulamları</h3>
+                  Peyzaj Uygulaması yapılacak olan bahçenin projesine uygun olarak sert zemin ve plantasyon uygulamasının ardından iklim, zemin yapısı, kullanılacak sudaki değerlere bağlı olarak bitki seçimi ve uygulamaları yapılır.
+              </div>
+            </div>
+            <div class="col-md-3 col-sm-6 col-xs-12">
+              <div class="features-item">
+                <div class="features-icon"><span class="icon-speedometer"></span></div>
+                <h3 class="features-title font-alt">Otomatik Sulama Sistemleri</h3>
+                  Otomatik sulama sistemleri birkiye doğru zamanda yeteri kadar su vererek, gelişimini en iyi seviyede yapabilmesini sağlamakla birlikte maddi yönden de kazançlı sonuç verir.
+            </div>
+          </div>
+        </div>
+        <div class="text-center">
+          <a class="btn btn-border-d btn-circle" href="/services">Tüm Hizmetlerimiz</a>
+        </div>
+      </section>
+
+      <br/><br/><br/>
+      <hr class="divider-w">
+
+      <section class="module-small pb-0" id="works">
+
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-6 col-sm-offset-3">
+              <h2 class="module-title font-alt">Öne Çıkan Ürünler</h2>
+              <div class="module-subtitle font-serif"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- categories -->
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12">
+              <ul class="filter font-alt" id="filters">
+                <li><a class="current wow fadeInUp" href="#" data-filter="*">Tümü</a></li>
+
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- products -->
+        <ul class="works-grid works-grid-gut works-hover-w works-grid-4" id="works-grid">
+
+
+        </ul>
+      </section>
+
+      <section class="module-small pb-1 bg-dark">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-6 col-md-6 col-lg-4 col-lg-offset-2">
+              <div class="callout-text font-alt">
+                <h3 class="callout-title">Mail Listemize Kaydolun</h3>
+                <p>Sadece alakalı mailler göreceksiniz</p>
+              </div>
+            </div>
+            <div class="col-sm-6 col-md-6 col-lg-4">
+              <div class="callout-btn-box">
+              
+              </div>
+            </div>
+          </div>
+        </div>
+      </section> <!-- </contact> -->
+
+      <section class="module-small" id="news">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-6 col-sm-offset-3">
+              <h2 class="module-title font-alt">En Son Projeler</h2>
+              <div class="module-subtitle font-serif">
+		Firma  olarak deneyimli proje ekibimizle doğru ihtiyaç analizi, etkili planlama ve yaratıcı tasarım süreçlerini tamamlayarak başarılı projeler ortaya çıkarıyoruz.
+              </div>
+            </div>
+          </div>
+          <div class="row multi-columns-row post-columns">
+
+          
+
+          </div>
+        </div>
+      </section> <!-- </news> -->
+
+      <section class="module bg-dark-60 p-0 parallax-bg" data-background="{% static 'images/social-background.jpg' %}" style="background-position: 50% 15%;">
+        <div class="container">
+          <div class="row multi-columns-row">
+            <div class="col-sm-6 col-md-4 col-lg-4">
+              <div class="count-item mb-sm-40">
+                <br/>
+                <div class="count-icon">
+                  <a class="social" target="_blank" href="https://twitter.com/Angorapeyzaj">
+                  <i class="fa  fa-twitter"></i></a></div>
+                <br/>
+              </div>
+            </div>
+            <div class="col-sm-6 col-md-4 col-lg-4">
+              <div class="count-item mb-sm-40">
+                <br/>
+                <div class="count-icon">
+                  <a class="social" target="_blank" href="https://www.facebook.com/www.angorapeyzaj.com.tr/">
+                  <i class="fa fa-facebook-square"></i></a></div>
+                <br/>
+              </div>
+            </div>
+            <div class="col-sm-6 col-md-4 col-lg-4">
+              <div class="count-item mb-sm-40">
+                <br/>
+                <div class="count-icon">
+                  <a class="social" target="_blank" href="https://www.instagram.com/angora_peyzaj/">
+                  <i class="fa fa-instagram"></i></a></div>
+                <br/>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      {% endblock %}
