@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load static %}
+{% block body_block %}
+  <div class="container">
+    <div class="jumbotron">
+      {% if registered %}
+        <h1>Thank you for registering!</h1>
+      {% else %}
+        <h1>Add a Flower</h1>
+        <h3>Just fill out the form.</h3>
+        <img src="theApp/static/uploaded/gun.jpg" width="150" height="100">
+<form enctype="multipart/form-data" method="POST">
+          {% csrf_token %}
+          {{ flower_form.as_p }}
+          <input type="submit" name="" value="Register">
+        </form>
+        
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

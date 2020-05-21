@@ -8,6 +8,8 @@ class myUser(models.Model):
     password = models.TextField(max_length=64, null=False)
     email = models.TextField(max_length=64, unique=True, null=False)
     userType = models.TextField(max_length=64, null=False)
+    #userTypeID = models.TextField(max_length=64, null=False)
+
     class Meta:
         app_label = 'theApp'
 
@@ -15,7 +17,6 @@ class myUser(models.Model):
         cursor = connection.cursor()
         cursor.execute(' INSERT INTO theApp_myuser(username,password,email,userType) VALUES(%s,%s,%s,%s)', [dataDic['username'],dataDic['password'],dataDic['email'],dataDic['userType']])
         print(' success')
-
 
     def set_password(psd):
         password = psd
@@ -71,8 +72,13 @@ class Seller(myUser):
     shop_name = models.TextField(max_length=64, unique=True, null=False)
     rating = models.DecimalField(max_digits=3, decimal_places=1)
     address = models.TextField(max_length=64, unique=True, null=False)
+
     class Meta:
         app_label = 'theApp'
+    def save(dataDic, *args, **kwargs):
+        cursor = connection.cursor()
+        cursor.execute(' INSERT INTO theApp_seller(username,password,email,userType) VALUES(%s,%s,%s,%s)', [dataDic['username'],dataDic['password'],dataDic['email'],dataDic['userType']])
+        print(' success')
 
 
 class Order_Delivery(models.Model):
@@ -89,23 +95,38 @@ class Flower(models.Model):
     flower_id = models.IntegerField(primary_key=True)
     flower_type = models.TextField(max_length=64, null=False)
     color = models.TextField(max_length=64, null=False)
-    occasion = models.TextField(max_length=64, unique=True, null=False)
+    occasion = models.TextField(max_length=64, null=False)
     price = models.DecimalField(max_digits=10, decimal_places=2)
+    stock_count = models.IntegerField(null = False, default=0)
     photo_id = models.IntegerField(null = False)
     description = models.TextField(max_length=256)
     category = models.CharField(max_length=64, verbose_name="category")
     class Meta:
         app_label = 'theApp'
-
+    
+    def save(dataDic, *args, **kwargs):
+        cursor = connection.cursor()
+        cursor.execute('INSERT INTO theApp_flower(flower_type,color,occasion,price,stock_count,photo_id,description,category) VALUES(%s,%s,%s,%s,%s,%s,%s,%s)', [dataDic['flower_type'],dataDic['color'],dataDic['occasion'],dataDic['price'],dataDic['stock_count'],dataDic['photo_id'],dataDic['description'],dataDic['category']])
+        print('success')
+        fid = cursor.execute('Select flower_id FROM theApp_flower Where photo_id = %s', [dataDic['photo_id']]).fetchall()[0][0]
+        return fid
 
 class Stocks(models.Model):
     flower_id = models.ForeignKey(Flower, on_delete=models.CASCADE)
-    seller_id = models.ForeignKey(Seller, on_delete=models.CASCADE)
+    seller_id = models.ForeignKey(myUser, on_delete=models.CASCADE)
     sold = models.IntegerField()
     count = models.IntegerField()
     class Meta:
         unique_together = [['flower_id', 'seller_id']]
         app_label = 'theApp'
+
+    def save(dataDic, *args, **kwargs):
+        print("FROM SELLER BOII:",dataDic)
+        cursor = connection.cursor()
+        cursor.execute('INSERT INTO theApp_stocks(sold,count,flower_id_id,seller_id_id) VALUES(%s,%s,%s,%s)', [dataDic['sold'],dataDic['count'],dataDic['flower_id'],dataDic['seller_id']])
+        print('success')
+    
+
 
 class Includes(models.Model):
     flower_id = models.ForeignKey(Flower, on_delete=models.CASCADE)
@@ -177,3 +198,8 @@ class Category(models.Model):
         verbose_name = 'Product Category'
         verbose_name_plural = 'Product Categories'
         app_label = 'theApp'
+
+    def save(dataDic, *args, **kwargs):
+        cursor = connection.cursor()
+        cursor.execute('INSERT INTO theApp_category(name) VALUES(%s)', [dataDic['name']])
+        print('success')
