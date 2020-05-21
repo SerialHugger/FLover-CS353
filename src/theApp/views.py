@@ -5,6 +5,11 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from theApp.forms import UserForm
+from theApp.models import myUser
+from django.db import connection
+
+currentUser = "empty"
+cursor = connection.cursor()
 
 @login_required
 def user_logout(request):
@@ -12,13 +17,14 @@ def user_logout(request):
     return HttpResponseRedirect(reverse('theApp:index'))
 
 def register(request):
+    
     registered = False
     if request.method == 'POST':
         user_form = UserForm(data=request.POST)
         if user_form.is_valid():
-            user = user_form.save()
-            user.set_password(user.password)
-            user.save()
+            dataDic = user_form.cleaned_data
+            print(dataDic)
+            myUser.save(dataDic)
             registered = True
         else:
             print(user_form.errors)
@@ -32,7 +38,18 @@ def user_login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-        user = authenticate(username=username, password=password)
+        cursor.execute('Select password, id From theApp_myuser WHERE username = %s', [username])
+        tmpTup = cursor.fetchall()[0]
+        tmp = tmpTup[0]
+        tmpid = tmpTup[1]
+        if(password == tmp):
+            print('success')
+            global currentUser 
+            currentUser = tmpid
+            return HttpResponseRedirect(reverse('theApp:index'))
+        else:
+            return HttpResponse("Your account was inactive.")
+        '''
         if user:
             if user.is_active:
                 login(request,user)
@@ -43,6 +60,7 @@ def user_login(request):
             print("Someone tried to login and failed.")
             print("They used username: {} and password: {}".format(username,password))
             return HttpResponse("Invalid login details given")
+        '''
     else:
         return render(request, 'login.html', {})
 
@@ -64,11 +82,14 @@ def signup(request):
     return render(request, 'signup.html', {'form': form})
 '''
 def index(request):
-
+    global currentUser
+    curr = currentUser
+    print(curr)
     profile_name = "todo" # from profile user alma bakilacak
     most_sold = "todo" # from stocks
     flowers = "todo" # butun flowerlar Select * From Flowers
     # make magic
+    print(request.user.username)
     random_flowers = "todo"
     categories = "todo" # get all categories
     context = {"profile_name": profile_name, "most_sold": most_sold} # todo

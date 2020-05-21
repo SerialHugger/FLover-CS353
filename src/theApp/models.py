@@ -1,17 +1,26 @@
 from django.db import models
 from django.utils import timezone
+from django.db import connection
 # Create your models here.
 
-class User(models.Model):
-    id = models.IntegerField(primary_key=True)
+class myUser(models.Model):
     username = models.TextField(max_length=64, null=False)
     password = models.TextField(max_length=64, null=False)
     email = models.TextField(max_length=64, unique=True, null=False)
+    userType = models.TextField(max_length=64, null=False)
     class Meta:
         app_label = 'theApp'
 
+    def save(dataDic, *args, **kwargs):
+        cursor = connection.cursor()
+        cursor.execute(' INSERT INTO theApp_myuser(username,password,email,userType) VALUES(%s,%s,%s,%s)', [dataDic['username'],dataDic['password'],dataDic['email'],dataDic['userType']])
+        print(' success')
+
+
+    def set_password(psd):
+        password = psd
+
 class Order(models.Model):
-    id = models.IntegerField(primary_key=True)
     note = models.CharField(max_length=300)
     price = models.FloatField()
     payment_method = models.CharField(max_length=64)
@@ -19,15 +28,17 @@ class Order(models.Model):
     est_delivery_time = models.CharField(max_length=64)
     class Meta:
         app_label = 'theApp'
+
 class Complaint_Report(models.Model):
     order_id = models.ForeignKey(Order, on_delete=models.CASCADE)
-    cust_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    cust_id = models.ForeignKey(myUser, on_delete=models.CASCADE)
     subject = models.CharField(max_length=1023)
     status = models.CharField(max_length=64)
     class Meta:
         unique_together = [['order_id', 'cust_id']]
         app_label = 'theApp'
-class Customer_Service_Employee(User):
+
+class Customer_Service_Employee(myUser):
     shift = models.CharField(max_length=64)
     class Meta:
         app_label = 'theApp'
@@ -38,7 +49,7 @@ class Forum_Topic(models.Model):
     title = models.CharField(max_length=64, verbose_name="title")
     category = models.CharField(max_length=64, verbose_name="category")
     no_of_entries = models.IntegerField()
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(myUser, on_delete=models.CASCADE)
     class Meta():
         app_label = 'theApp'
 
@@ -50,13 +61,13 @@ class Forum_Entry(models.Model):
         unique_together = [['topic_id', 'date']]
         app_label = 'theApp'
 
-class Courier(User):
+class Courier(myUser):
     city = models.TextField(max_length=64, null = False)
     vehicle = models.TextField(max_length=64)
     class Meta:
         app_label = 'theApp'
 
-class Seller(User):
+class Seller(myUser):
     shop_name = models.TextField(max_length=64, unique=True, null=False)
     rating = models.DecimalField(max_digits=3, decimal_places=1)
     address = models.TextField(max_length=64, unique=True, null=False)
@@ -75,7 +86,7 @@ class Order_Delivery(models.Model):
 
 
 class Flower(models.Model):
-    id = models.IntegerField(primary_key=True)
+    flower_id = models.IntegerField(primary_key=True)
     flower_type = models.TextField(max_length=64, null=False)
     color = models.TextField(max_length=64, null=False)
     occasion = models.TextField(max_length=64, unique=True, null=False)
@@ -101,11 +112,11 @@ class Includes(models.Model):
     order_id = models.ForeignKey(Order, on_delete=models.CASCADE)
     amount = models.IntegerField()
     class Meta:
-        unique_together = [['flowe_id', 'order_id']]
+        unique_together = [['flower_id', 'order_id']]
         app_label = 'theApp'
 
-class Customer(User):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, parent_link=True)
+class Customer(myUser):
+    user = models.OneToOneField(myUser, on_delete=models.CASCADE, parent_link=True)
     bio = models.TextField(max_length=500, blank=True)
     birth_date = models.DateField(null=True, blank=True)
     class Meta:
@@ -120,14 +131,14 @@ class Faw_Flow(models.Model):
         app_label = 'theApp'
 
 class User_Phone_Number(models.Model):
-    id = models.ForeignKey('User', on_delete=models.CASCADE)
+    phone_id = models.ForeignKey(myUser, on_delete=models.CASCADE)
     phone_number = models.TextField(max_length=64,  null=False)
     class Meta:
-        unique_together = [['id', 'phone_number']]
+        unique_together = [['phone_id', 'phone_number']]
         app_label = 'theApp'
 
 '''
-@receiver(post_save, sender=User)
+@receiver(post_save, sender=myUser)
 def update_user_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)
@@ -142,12 +153,12 @@ class Chocolate (models.Model):
         app_label = 'theApp'
 
 class Attached (models.Model):
-    id = models.ForeignKey(Order, on_delete=models.CASCADE)
+    Order_id = models.ForeignKey(Order, on_delete=models.CASCADE)
     attached_type = models.ForeignKey(Chocolate, on_delete=models.CASCADE)
     no_of_entries = models.IntegerField()
     #FOREIGN KEY NASI PRIMARY OLACAK BUNA BAK
     class Meta():
-        unique_together = [['id' , 'attached_type']]
+        unique_together = [['Order_id' , 'attached_type']]
         app_label = 'theApp'
 
 class Fav_shop(models.Model):
