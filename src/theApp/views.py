@@ -4,9 +4,10 @@ from itertools import chain
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
-from theApp.forms import UserForm
-from theApp.models import myUser
+from theApp.forms import *
+from theApp.models import *
 from django.db import connection
+import random
 
 currentUser = "empty"
 cursor = connection.cursor()
@@ -17,7 +18,6 @@ def user_logout(request):
     return HttpResponseRedirect(reverse('theApp:index'))
 
 def register(request):
-    
     registered = False
     if request.method == 'POST':
         user_form = UserForm(data=request.POST)
@@ -64,6 +64,47 @@ def user_login(request):
     else:
         return render(request, 'login.html', {})
 
+def registerProduct(request):
+    registered = False
+    if request.method == 'POST':
+        flower_form = flowerForm(data=request.POST)
+        if flower_form.is_valid():
+            dataDic = flower_form.cleaned_data
+            print(dataDic)
+            fid = Flower.save(dataDic)
+            stockDic = {}
+            stockDic['flower_id'] = str(fid)
+            stockDic['seller_id'] = currentUser
+            stockDic['count'] = dataDic['stock_count']
+            stockDic['sold'] = '0'
+            print("CURRENT USER:", currentUser)
+            Stocks.save(stockDic)
+            registered = True
+        else:
+            print(flower_form.errors)
+    else:
+        flower_form = flowerForm()
+    return render(request,'registerProduct.html',
+                          {'flower_form':flower_form,
+                           'registered':registered})
+
+def easteregg(request):
+    registered = False
+    if request.method == 'POST':
+        gizli_form = gizliForm(data=request.POST)
+        if gizli_form.is_valid():
+            dataDic = gizli_form.cleaned_data
+            print(dataDic)
+            Category.save(dataDic)
+            registered = True
+        else:
+            print(gizli_form.errors)
+    else:
+        gizli_form = gizliForm()
+    return render(request,'easteregg.html',
+                          {'gizli_form':gizli_form,
+                           'registered':registered})
+
 '''
 def signup(request):
     if request.method == 'POST':
@@ -85,22 +126,25 @@ def index(request):
     global currentUser
     curr = currentUser
     print(curr)
-    profile_name = "todo" # from profile user alma bakilacak
-    most_sold = "todo" # from stocks
-    flowers = "todo" # butun flowerlar Select * From Flowers
+    
+    profile_name = cursor.execute('SELECT username FROM theApp_myuser WHERE id = %s', [currentUser]).fetchall()[0][0]
+    most_sold = cursor.execute('SELECT * From theApp_stocks ORDER BY sold DESC LIMIT 5').fetchall()
+    print(most_sold)
+    #SELECT * FROM table1 WHERE id IN (SELECT MAX(num1+num2) FROM table2) ORDER BY id DESC limit 5
+    flowers = cursor.execute('SELECT * From theApp_flower').fetchall()
     # make magic
-    print(request.user.username)
-    random_flowers = "todo"
-    categories = "todo" # get all categories
-    context = {"profile_name": profile_name, "most_sold": most_sold} # todo
+    # print(request.user.username) 
+    random_flowers = random.sample(flowers, 5)
+    categories =  cursor.execute('SELECT * From theApp_category').fetchall()
+    print(categories)
+    context = {"profile_name": profile_name, "most_sold": most_sold, "flowers": flowers, "random_flowers": random_flowers, "categories": categories} # todo
     return render(request, 'index.html', context)
 
 def seller(request, pk):
-    profile_name = "todo" # from profile user alma bakilacak
-    products = "todo" # get products from stocks
-    seller = "todo" # get seller with pk
-    categories = "todo" # get all categories
-    context = {"products": products, "seller": seller} # todo
+    products = cursor.execute('SELECT flower_id_id FROM theApp_products WHERE seller_id_id = %s AND count > 0', [pk]).fetchall()
+    seller = pk #?
+    categories = cursor.execute('SELECT * From theApp_category').fetchall()
+    context = {"products": products, "seller": seller, "categories": categories} # todo
     return render(request, 'seller.html', context)
     
 def product(request, pk):
@@ -160,8 +204,6 @@ def createTopic(request):
     context = {'forumCategories': forumCategories}
     return render(request, 'createTopic.html', context)
 
-def addFlover(request):
-    return render(request, 'addFlower.html', context)
 
 def myOrders(request):
     orders = "todo" # Get orders from order delivery
@@ -182,5 +224,6 @@ def customerReport(request, pk):
     
     return render(request, 'customerReport.html', context)
 
-
+def editLink(stra):
+    return
 # Create your views here.
