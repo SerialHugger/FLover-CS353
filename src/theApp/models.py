@@ -97,7 +97,7 @@ class Flower(models.Model):
     color = models.TextField(max_length=64, null=False)
     occasion = models.TextField(max_length=64, null=False)
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    stock_count = models.IntegerField()
+    stock_count = models.IntegerField(null = False, default=0)
     photo_id = models.IntegerField(null = False)
     description = models.TextField(max_length=256)
     category = models.CharField(max_length=64, verbose_name="category")
