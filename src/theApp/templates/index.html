@@ -84,7 +84,9 @@
             <div class="col-sm-12">
               <ul class="filter font-alt" id="filters">
                 <li><a class="current wow fadeInUp" href="#" data-filter="*">Tümü</a></li>
-
+                  {% for category in categories %}
+                    <li><a class="wow fadeInUp" href="#" data-filter=".{{category.id}}" data-wow-delay="0.6s">{{category.id}}</a></li>
+                  {% endfor %}
               </ul>
             </div>
           </div>
@@ -93,7 +95,14 @@
         <!-- products -->
         <ul class="works-grid works-grid-gut works-hover-w works-grid-4" id="works-grid">
 
-
+          {% for flower in flowers %}
+          <li class="work-item {% for category in flower.category.all %}{{category.id}} {% endfor %}">
+              <div class="work-image"><img src="theApp/static/uploaded/15.jpg" alt="Portfolio Item"/></div>
+              <div class="work-caption font-alt">
+                <h3 class="work-title">{{flower.occasion}}</h3>
+              </div>
+          </li>
+          {% endfor %}
         </ul>
       </section>
 
