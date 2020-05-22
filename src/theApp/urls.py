@@ -14,6 +14,7 @@ urlpatterns = [
     path("index", views.index, name='index'),
     path("registerProduct", views.registerProduct, name='registerProduct'),
     path("easteregg", views.easteregg, name='easteregg'),
+    path("products", views.products, name='products'),
     #path("contact", views.contact, name='contact'),
     #path("blog", views.blog, name='blog'),
 

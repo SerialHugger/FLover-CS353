@@ -29,38 +29,33 @@
 
       <section class="module pb-0">
         <div class="container">
-          <div class="row multi-columns-row">
-            <div class="col-md-3 col-sm-6 col-xs-12">
-              <div class="features-item">
-                <div class="features-icon"><span class="icon-pricetags"></span></div>
-                <h3 class="features-title font-alt">Bitki ve Ağaç Satışı</h3>
-                  Fidanlık ve seramızda üretimini yaptığımız mevsimlik bitkilerin yanı sıra, dış mekan, ağaç, çalı türü peyzaj uygulama projelerinde kullanılan bitkiler stoklarımızda ve teşhirde mevcuttur.
+          <div class="text-center">
+            <div class="row multi-columns-row">
+              
+              <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="features-item">
+                  <h3 class="features-title font-alt"></h3>
                 </div>
-            </div>
-            <div class="col-md-3 col-sm-6 col-xs-12">
-              <div class="features-item">
-                <div class="features-icon"><span class="icon-presentation"></span></div>
-                <h3 class="features-title font-alt">Proje Danışmanlığı</h3>
-                  Firma olarak deneyimli proje ekibimizle doğru ihtiyaç analizi, etkili planlama ve yaratıcı tasarım süreçlerini başarıyla tamamlayarak projeler ortaya koyuyuoruz.
               </div>
-            </div>
-            <div class="col-md-3 col-sm-6 col-xs-12">
-              <div class="features-item">
-                <div class="features-icon"><span class="icon-tools"></span></div>
-                <h3 class="features-title font-alt">Peyzaj Uygulamları</h3>
-                  Peyzaj Uygulaması yapılacak olan bahçenin projesine uygun olarak sert zemin ve plantasyon uygulamasının ardından iklim, zemin yapısı, kullanılacak sudaki değerlere bağlı olarak bitki seçimi ve uygulamaları yapılır.
+              <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="features-item">
+                  <img src="{% static 'images/favicons/ico.png' %}">
+                  <h3 class="features-title font-alt">Select a Flower</h3>
+                    Select a flower that suits you from any of the shops!
+                  </div>
               </div>
-            </div>
-            <div class="col-md-3 col-sm-6 col-xs-12">
-              <div class="features-item">
-                <div class="features-icon"><span class="icon-speedometer"></span></div>
-                <h3 class="features-title font-alt">Otomatik Sulama Sistemleri</h3>
-                  Otomatik sulama sistemleri birkiye doğru zamanda yeteri kadar su vererek, gelişimini en iyi seviyede yapabilmesini sağlamakla birlikte maddi yönden de kazançlı sonuç verir.
+              <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="features-item">
+                  <img src="{% static 'images/favicons/ship.png' %}">
+                  <h3 class="features-title font-alt">Give your order</h3>
+                    Give your order for someone special!
+                </div>
+              </div>
             </div>
           </div>
         </div>
         <div class="text-center">
-          <a class="btn btn-border-d btn-circle" href="/services">Tüm Hizmetlerimiz</a>
+          <a class="btn btn-border-d btn-circle" href="/products">Order Now</a>
         </div>
       </section>
 
@@ -72,7 +67,7 @@
         <div class="container">
           <div class="row">
             <div class="col-sm-6 col-sm-offset-3">
-              <h2 class="module-title font-alt">Öne Çıkan Ürünler</h2>
+              <h2 class="module-title font-alt">Expensive Flowers</h2>
               <div class="module-subtitle font-serif"></div>
             </div>
           </div>
@@ -83,9 +78,10 @@
           <div class="row">
             <div class="col-sm-12">
               <ul class="filter font-alt" id="filters">
-                <li><a class="current wow fadeInUp" href="#" data-filter="*">Tümü</a></li>
+                <li><a class="current wow fadeInUp" href="#" data-filter="*">All</a></li>
+                
                   {% for category in categories %}
-                    <li><a class="wow fadeInUp" href="#" data-filter=".{{category.id}}" data-wow-delay="0.6s">{{category.id}}</a></li>
+                    <li><a class="wow fadeInUp" href="#" data-filter="{{category.name}}" data-wow-delay="0.6s">{{category.name}}</a></li>
                   {% endfor %}
               </ul>
             </div>
@@ -96,10 +92,11 @@
         <ul class="works-grid works-grid-gut works-hover-w works-grid-4" id="works-grid">
 
           {% for flower in flowers %}
-          <li class="work-item {% for category in flower.category.all %}{{category.id}} {% endfor %}">
-              <div class="work-image"><img src="theApp/static/uploaded/15.jpg" alt="Portfolio Item"/></div>
+
+          <li class="work-item {% for category in flower.category.all %} {% if category == category.name %}  {% endif %} {% endfor %}">
+              <div class="work-image"><img src="theApp/static/uploaded/{{flower.photo_id}}.jpg" alt="Portfolio Item" style="width:400px;height:400px"/></div>
               <div class="work-caption font-alt">
-                <h3 class="work-title">{{flower.occasion}}</h3>
+                <h3 class="work-title">{{flower.category}}</h3>
               </div>
           </li>
           {% endfor %}
@@ -111,8 +108,6 @@
           <div class="row">
             <div class="col-sm-6 col-md-6 col-lg-4 col-lg-offset-2">
               <div class="callout-text font-alt">
-                <h3 class="callout-title">Mail Listemize Kaydolun</h3>
-                <p>Sadece alakalı mailler göreceksiniz</p>
               </div>
             </div>
             <div class="col-sm-6 col-md-6 col-lg-4">
@@ -128,9 +123,9 @@
         <div class="container">
           <div class="row">
             <div class="col-sm-6 col-sm-offset-3">
-              <h2 class="module-title font-alt">En Son Projeler</h2>
+              <h2 class="module-title font-alt">Flover</h2>
               <div class="module-subtitle font-serif">
-		Firma  olarak deneyimli proje ekibimizle doğru ihtiyaç analizi, etkili planlama ve yaratıcı tasarım süreçlerini tamamlayarak başarılı projeler ortaya çıkarıyoruz.
+		            Selling flovers since sometime ago
               </div>
             </div>
           </div>
@@ -149,7 +144,7 @@
               <div class="count-item mb-sm-40">
                 <br/>
                 <div class="count-icon">
-                  <a class="social" target="_blank" href="https://twitter.com/Angorapeyzaj">
+                  <a class="social" target="_blank" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
                   <i class="fa  fa-twitter"></i></a></div>
                 <br/>
               </div>
@@ -158,7 +153,7 @@
               <div class="count-item mb-sm-40">
                 <br/>
                 <div class="count-icon">
-                  <a class="social" target="_blank" href="https://www.facebook.com/www.angorapeyzaj.com.tr/">
+                  <a class="social" target="_blank" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
                   <i class="fa fa-facebook-square"></i></a></div>
                 <br/>
               </div>
@@ -167,7 +162,7 @@
               <div class="count-item mb-sm-40">
                 <br/>
                 <div class="count-icon">
-                  <a class="social" target="_blank" href="https://www.instagram.com/angora_peyzaj/">
+                  <a class="social" target="_blank" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
                   <i class="fa fa-instagram"></i></a></div>
                 <br/>
               </div>

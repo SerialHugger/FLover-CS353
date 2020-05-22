@@ -1,5 +1,5 @@
 {% extends "base-2.html" %}
-{% load staticfiles %}
+{% load static %}
 
 {% block main %}
 
@@ -8,7 +8,7 @@
   <div class="container">
     <div class="row">
       <div class="col-sm-6 col-sm-offset-3">
-        <h2 class="module-title font-alt">Ürünler</h2>
+        <h2 class="module-title font-alt">Flowers</h2>
         <div class="module-subtitle font-serif"></div>
       </div>
     </div>
@@ -18,7 +18,7 @@
     <div class="row">
       <div class="col-sm-4">
         <select id="categorySearch" class="form-control">
-          <option selected="selected">Tüm Kategoriler</option>
+          <option selected="selected">Categories</option>
 
           {% for category in categories %}
           <option>{{category.name}}</option>
@@ -34,7 +34,7 @@
               <!-- search box -->
               {% csrf_token %}
               <input  id='csrftoken' type='text' name='csrftoken' value="{{csrf_token}}" hidden='true'/>
-              <input id='productSearch' class="form-control" type="text" placeholder="Arama..."/>
+              <input id='productSearch' class="form-control" type="text" placeholder="Search..."/>
               <button class="search-btn" type="submit"><i class="fa fa-search"></i></button>
             </div>
           </form>
@@ -51,26 +51,22 @@
     <div id='results'>
       <div class="row multi-columns-row">
 
-        {% for product in products %}
+        {% for flower in flowers %}
         <div class="col-sm-6 col-md-4">
           <div class="gallery-item">
             <div class="gallery-image">
-              <a class="gallery" href="{{product.thumbnail|editLink}}" onclick='location.href="{% url "productCountUp" pk=product.pk %}"' title="{{product.title}}">
-                <img src="{{product.thumbnail|editLink}}" alt="Gallery Image 1"/>
+              <a class="gallery" href="theApp/static/uploaded/{{flower.photo_id}}.jpg" title="{{flower.flower_type}}">
+                <img src="theApp/static/uploaded/{{flower.photo_id}}.jpg" alt="Gallery Image 1" style="width:400px;height:400px"/>
                 <div class="gallery-caption">
                   <div class="gallery-icon"><span class="icon-magnifying-glass"></span></div>
                 </div>
               </a>
             </div>
-            <br/><h2 class="post-title">{{product.title}}</h2>
-           	{% for category in product.categories.all %}{{category.name}} {% endfor %}
-            <div class="post-entry"><p>{{product.description}}</p></div>
+            <br/><h2 class="post-title">{{flower.flower_type}}</h2>
+           	{% for category in flower.categories.all %}{{category.name}} {% endfor %}
+            <div class="post-entry"><p>{{flower.description}}</p></div>
           </div>
         </div>
-        {% if forloop.counter|remainderThree %}
-        </div>
-        <div class="row multi-columns-row">
-        {% endif %}
         {% endfor %}
 
       </div>
