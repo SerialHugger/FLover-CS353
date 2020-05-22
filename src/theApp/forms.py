@@ -17,7 +17,7 @@ class flowerForm(forms.ModelForm):
     color = forms.CharField(max_length=100)
     occasion = forms.CharField(max_length=100)
     description = forms.CharField(max_length=300)
-    FLOWERCATEGORIES = [('1','Some category'), ('2','Some other category'), ('3','Anohter category'), ('4', 'Other')]
+    FLOWERCATEGORIES = [('1','plastic'), ('2','focal'), ('3','filler'), ('4', 'line')]
     category = forms.CharField(label = 'Choose a category', widget = forms.Select(choices=FLOWERCATEGORIES))
     class Meta():
         model = Flower

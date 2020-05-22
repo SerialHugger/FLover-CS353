@@ -106,6 +106,16 @@ class Flower(models.Model):
     
     def save(dataDic, *args, **kwargs):
         cursor = connection.cursor()
+        print("cate :", dataDic['category'])
+        if(str(dataDic['category']) == "1"):
+            dataDic['category'] = 'plastic'
+        elif(str(dataDic['category']) == "2"):
+            dataDic['category'] = 'focal'
+        elif(str(dataDic['category']) == "3"):
+            dataDic['category'] = 'filler'
+        elif(str(dataDic['category']) == "4"):
+            dataDic['category'] = 'line'
+        print("cate :", dataDic['category'])
         cursor.execute('INSERT INTO theApp_flower(flower_type,color,occasion,price,stock_count,photo_id,description,category) VALUES(%s,%s,%s,%s,%s,%s,%s,%s)', [dataDic['flower_type'],dataDic['color'],dataDic['occasion'],dataDic['price'],dataDic['stock_count'],dataDic['photo_id'],dataDic['description'],dataDic['category']])
         print('success')
         fid = cursor.execute('Select flower_id FROM theApp_flower Where photo_id = %s', [dataDic['photo_id']]).fetchall()[0][0]

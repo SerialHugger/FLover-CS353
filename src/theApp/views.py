@@ -12,7 +12,7 @@ import random
 currentUser = "empty"
 cursor = connection.cursor()
 
-@login_required
+
 def user_logout(request):
     logout(request)
     return HttpResponseRedirect(reverse('theApp:index'))
@@ -127,17 +127,17 @@ def index(request):
     curr = currentUser
     print(curr)
     
-    profile_name = cursor.execute('SELECT username FROM theApp_myuser WHERE id = %s', [currentUser]).fetchall()[0][0]
-    most_sold = cursor.execute('SELECT * From theApp_stocks ORDER BY sold DESC LIMIT 5').fetchall()
+    profile_name = myUser.objects.raw('SELECT username FROM theApp_myuser WHERE id = %s', [currentUser])
+    most_sold = Stocks.objects.raw('SELECT * From theApp_stocks ORDER BY sold DESC LIMIT 5')
     print(most_sold)
     #SELECT * FROM table1 WHERE id IN (SELECT MAX(num1+num2) FROM table2) ORDER BY id DESC limit 5
-    flowers = cursor.execute('SELECT * From theApp_flower').fetchall()
+    flowers = Flower.objects.raw('SELECT * From theApp_flower ORDER BY price DESC LIMIT 4')
     # make magic
     # print(request.user.username) 
-    random_flowers = random.sample(flowers, 5)
-    categories =  cursor.execute('SELECT * From theApp_category').fetchall()
+    #random_flowers = random.sample(flowers, 5)
+    categories =  Category.objects.raw('SELECT * From theApp_category')
     print(categories)
-    context = {"profile_name": profile_name, "most_sold": most_sold, "flowers": flowers, "random_flowers": random_flowers, "categories": categories} # todo
+    context = {"profile_name": profile_name, "most_sold": most_sold, "flowers": flowers, "categories": categories} # todo
     return render(request, 'index.html', context)
 
 def seller(request, pk):
@@ -146,7 +146,14 @@ def seller(request, pk):
     categories = cursor.execute('SELECT * From theApp_category').fetchall()
     context = {"products": products, "seller": seller, "categories": categories} # todo
     return render(request, 'seller.html', context)
-    
+
+def products(request):
+    categories =  Category.objects.raw('SELECT * From theApp_category')
+    flowers = Flower.objects.raw('SELECT * From theApp_flower')
+    # make magic
+    context = {"flowers": flowers, "categories": categories}
+    return render(request, 'products.html', context)
+
 def product(request, pk):
     profile_name = "todo" # from profile user alma bakilacak
     favorite_flowers = "todo" # from profile get favorited
@@ -224,6 +231,8 @@ def customerReport(request, pk):
     
     return render(request, 'customerReport.html', context)
 
-def editLink(stra):
-    return
+def editLink(link):
+    tmp = "theApp/static/uploaded/" + str(link) + ".jpg"
+    print(tmp)
+    return tmp
 # Create your views here.
