@@ -7,11 +7,17 @@ from django.urls import reverse
 from theApp.forms import *
 from theApp.models import *
 from django.db import connection
+from django.template.defaulttags import register
 import random
 
 currentUser = "empty"
 cursor = connection.cursor()
 
+'''
+@register.filter
+def editLink(link):
+    return str(link).replace("/product/","theApp/static/uploaded/") + ".jpg"
+'''
 
 def user_logout(request):
     logout(request)
@@ -39,7 +45,10 @@ def user_login(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
         cursor.execute('Select password, id From theApp_myuser WHERE username = %s', [username])
-        tmpTup = cursor.fetchall()[0]
+        try:
+            tmpTup = cursor.fetchall()[0]
+        except:
+            return HttpResponse("No such account.")
         tmp = tmpTup[0]
         tmpid = tmpTup[1]
         if(password == tmp):
@@ -105,6 +114,42 @@ def easteregg(request):
                           {'gizli_form':gizli_form,
                            'registered':registered})
 
+def deleteProduct(request):
+    registered = False
+    if request.method == 'POST':
+        del_form = deletionForm(data=request.POST)
+        if del_form.is_valid():
+            dataDic = del_form.cleaned_data
+            print(dataDic)
+            tmp = cursor.execute('Select flower_id From theApp_flower WHERE flower_type = %s', [dataDic['name']]).fetchall()[0][0]
+            Flower.delete(dataDic['name'],tmp)
+            registered = True
+        else:
+            print(del_form.errors)
+    else:
+        del_form = deletionForm()
+    return render(request,'deletion.html',
+                          {'del_form':del_form,
+                           'registered':registered})
+
+def changeProduct(request):
+    registered = False
+    if request.method == 'POST':
+        price_form = updatePriceForm(data=request.POST)
+        if price_form.is_valid():
+            dataDic = price_form.cleaned_data
+            print(dataDic)
+            Flower.changePrice(dataDic['flower_type'],dataDic['price'])
+            registered = True
+        else:
+            print(price_form.errors)
+    else:
+        price_form = updatePriceForm()
+    return render(request,'changeProduct.html',
+                          {'price_form':price_form,
+                           'registered':registered})
+
+
 '''
 def signup(request):
     if request.method == 'POST':
@@ -127,7 +172,7 @@ def index(request):
     curr = currentUser
     print(curr)
     
-    profile_name = myUser.objects.raw('SELECT username FROM theApp_myuser WHERE id = %s', [currentUser])
+    profile_name = cursor.execute('SELECT username, id FROM theApp_myuser WHERE id = %s', [currentUser]).fetchall()[0][0]
     most_sold = Stocks.objects.raw('SELECT * From theApp_stocks ORDER BY sold DESC LIMIT 5')
     print(most_sold)
     #SELECT * FROM table1 WHERE id IN (SELECT MAX(num1+num2) FROM table2) ORDER BY id DESC limit 5
@@ -155,26 +200,38 @@ def products(request):
     return render(request, 'products.html', context)
 
 def product(request, pk):
-    profile_name = "todo" # from profile user alma bakilacak
-    favorite_flowers = "todo" # from profile get favorited
-    flower = "todo" # specific flower with pk
-    stock = "todo" # get flower stock
-    context = {"flower": flower} # todo
+    #flower_id = pk.flower_id
+    #profile_name = myUser.objects.raw('SELECT username From theApp_myUser WHERE id = %s', currentUser) # from profile user alma bakilacak
+    #favorite_flowers = Faw_Flow.objects.raw('SELECT * From theApp_Faw_Flow WHERE id = %s', currentUser) # from profile get favorited
+    print(pk)
+    flow_id = cursor.execute('Select flower_id From theApp_flower WHERE photo_id = %s', [pk]).fetchall()[0][0]
+    flower = cursor.execute('SELECT photo_id,  description, flower_type, flower_id, occasion, price From theApp_flower WHERE photo_id = %s', [pk]).fetchall() # specific flower with pk
+    ph_id = flower[0][0]
+    desc = flower[0][1]
+    fType = flower[0][2]
+    occ = flower[0][4]
+    price = flower[0][5]
+    stock = cursor.execute('SELECT count, id FROM theApp_stocks WHERE flower_id_id = %s', [flow_id]).fetchall()[0][0] # get flower stock
+    
+    context = {"flower": flower , "stock": stock, "ph_id": ph_id, "desc": desc, "fType": fType, "occ": occ, "price": price} # todo
+
     return render(request, 'product.html', context)
 
 def profile(request):
-    profile = "todo" # get profile
-    orders = "todo" # get orders
-    favorites = "todo" # get favorite flowers from fav
-    complaint = "todo" # get all complaints with user id
+    global currentUser
+    userInfo = myUser.objects.raw('SELECT * FROM theApp_myuser WHERE id = %s', currentUser) # get profile
+    #userInfoTup = cursor.fetchall()[0]
+    orders = Order.objects.raw("SELECT id, price, note, date FROM theApp_order WHERE customer_id = %s", currentUser) # get orders
+    #ordersTup = cursor.fetchall()
+    favorites = Flower.objects.raw("SELECT F.flower_type FROM myApp_flower F WHERE F.flower_id IN (SELECT F.flower_id FROM myApp_faw_flow WHERE id = %s)", currentUser) # get favorite flowers from fav
+    #favTup = cursor.fetchall()
+    complaints = Complaint_Report.objects.raw("SELECT order_id_id, status, subject FROM myApp_complaint_report WHERE cust_id_id = %s", currentUser) # get all complaints with user id
+    #complaintTup =  cursor.fetchall()
     context = {"temp": temp}
     return render(request, 'profile.html', context)
 
-def contact(request):
-    return render(request, 'contact.html')
-
-def contact(request):
-    return render(request, 'aboutus.html')
+def about(request):
+    return render(request, 'about.html')
 
 def order(request, pks):
     # pks is a list
@@ -190,20 +247,20 @@ def changePassword(requst):
     return render(request, 'changePass.html')
 
 def forum(request):
-    forumTopics = "todo" # get from forum topics table
-    forumCategories = "todo" # get categories from forum categories
-    context = {"temp": temp}
-    return render(request, 'forum.html')
+    forumTopics = Forum_Topic.objects.raw('SELECT * FROM theApp_forum_Topic') # get from forum topics table
+    #forumCategories = "todo" # get categories from forum categories
+    context = {"forumTopic": forumTopics}
+    return render(request, 'forum.html', context)
 
 def postEntry(request, pk):
-    forumTopic = "todo" 
-    context = {'forumTopic': formTopic}
+    postEntry = Forum_Entry.objects.raw('SELECT * FROM theApp_forum_Entry WHERE topic_id = %s' , pk)
+    context = {'postEntry': postEntry}
     return render(request, 'postEntry.html',context)
 
 def forumTopic(request, pk):
-    forumTopic = "todo" # get topic with pk
-    entries = "todo" #from forumEntry table
-    context = {'forumTopic': formTopic}
+    forumTopics = Forum_Topic.objects.raw('SELECT * FROM theApp_forum_Topic WHERE topic_id = %s' , pk) # get from forum topics table
+    entries = postEntry = Forum_Entry.objects.raw('SELECT * FROM theApp_forum_Entry WHERE topic_id = %s' , pk)
+    context = {'forumTopic': formTopic, 'entries': entries}
     return render(request, 'forumTopic.html', context)
 
 def createTopic(request):
@@ -221,8 +278,8 @@ def myOrders(request):
     return render(request, 'myOrders.html', context)
 
 def customerService(request):
-    cancer = "todo" # get cancer from complaint Report
-    username = "todo" # get username with user id from cancer
+    reports = Complaint_Report.objects.raw('SELECT order_id_id, subject, status, cust_id_id FROM Complaint_Report') # get cancer from complaint Report
+    username = myUser.objects.raw('SELECT Username FROM theApp_myuser WHERE id IN (SELECT cust_id FROM Complaint_Report') # get username with user id from cancer
     context = {"temp": temp}
     return render(request, 'customerService.html', context)
 
@@ -231,8 +288,5 @@ def customerReport(request, pk):
     
     return render(request, 'customerReport.html', context)
 
-def editLink(link):
-    tmp = "theApp/static/uploaded/" + str(link) + ".jpg"
-    print(tmp)
-    return tmp
+
 # Create your views here.

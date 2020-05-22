@@ -28,3 +28,15 @@ class gizliForm(forms.ModelForm):
     class Meta():
         model = Category
         fields = ('name',)
+        
+class deletionForm(forms.ModelForm):
+    name = forms.CharField(max_length=100)
+    class Meta():
+        model = Flower
+        fields = ('name',)
+
+class updatePriceForm(forms.ModelForm):
+    flower_type = forms.CharField(max_length=100)
+    class Meta():
+        model = Flower
+        fields = ('flower_type','price')

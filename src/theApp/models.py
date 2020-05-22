@@ -30,6 +30,10 @@ class Order(models.Model):
     class Meta:
         app_label = 'theApp'
 
+    def save(note,price,payment_method):
+        datDict = {"note" : note,  "price": price , "payment_method": payment_method , "date" : timezone.now , "est_delivery_time":"1"} 
+        cursor.execute(' INSERT INTO theApp_order(note,price,payment_method,date,est_delivery_time) VALUES(%s,%s,%s,%s,%s)', [dataDic['note'],dataDic['price'],dataDic['payment_method'],dataDic['date'],dataDic['est_delivery_time']])
+
 class Complaint_Report(models.Model):
     order_id = models.ForeignKey(Order, on_delete=models.CASCADE)
     cust_id = models.ForeignKey(myUser, on_delete=models.CASCADE)
@@ -120,6 +124,17 @@ class Flower(models.Model):
         print('success')
         fid = cursor.execute('Select flower_id FROM theApp_flower Where photo_id = %s', [dataDic['photo_id']]).fetchall()[0][0]
         return fid
+
+    def delete(name, flo_id, *args, **kwargs):
+        cursor = connection.cursor()
+        print(name)
+        cursor.execute('DELETE FROM theApp_stocks WHERE flower_id_id = %s', [flo_id])
+        cursor.execute('DELETE FROM theApp_flower WHERE flower_type = %s', [name])
+
+    def changePrice(name, price, *args, **kwargs):
+        cursor = connection.cursor()
+        cursor.execute('UPDATE theApp_flower SET price = %s WHERE flower_type = %s', [price, name])
+
 
 class Stocks(models.Model):
     flower_id = models.ForeignKey(Flower, on_delete=models.CASCADE)

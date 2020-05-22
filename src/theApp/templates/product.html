@@ -1,0 +1,77 @@
+{% extends "base-2.html" %}
+{% load static %}
+
+{% block main %}
+<section class="module">
+          <div class="container">
+            <div class="row">
+              <div class="col-sm-6 mb-sm-40">
+                <div class="col-sm-6 col-md-12 col-lg-12">
+                  <div class="gallery-item">
+                    <div class="gallery-image"><a class="gallery" href="theApp/static/uploaded/{{ph_id}}.jpg" title="{{fType}}">
+                      <img src="theApp/static/uploaded/{{ph_id}}.jpg"/>
+                        <div class="gallery-caption">
+                          <div class="gallery-icon"><span class="icon-magnifying-glass"></span></div>
+                        </div></a></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-sm-6">
+                <div class="row">
+                  <div class="col-sm-12">
+                    <h1 class="product-title font-alt">{{fType}}</h1>
+                  </div>
+                </div>
+                <div class="row mb-20">
+                  <div class="col-sm-12">
+                    {{occ}}
+                  </div>
+                </div>
+                <hr class="divider-w">
+                <div class="row mb-20">
+                  <div class="col-sm-12">
+                    <div class="description">
+                      <p>Price: {{price}} Sipali</p>
+                      <p>{{desc}}</p>
+                      <p> ------------------------------------------------------- </p>
+                      <p>Stock count: {{stock}}</p>
+                      <div class="post-more"><a class="more-link" href="https://www.ciceksepeti.com/">Buy Now</a></div>
+                    </div>
+                    <div class="post-more"><a class="more-link" href="/products">All Flowers</a></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <hr class="divider-w">
+        <section class="module-small">
+          <div class="container">
+            <div class="row">
+              <div class="col-sm-6 col-sm-offset-3">
+                <h2 class="module-title font-alt">Similar Type of Flowers</h2>
+              </div>
+            </div>
+            <div class="row multi-columns-row">
+
+              {% for aFlower in similarFlowers %}
+              <div class="col-sm-6 col-md-3 col-lg-3">
+                <div class="post">
+                  <div class="post-thumbnail"><a href="{{aFlower.photo_id}}"><img src="theApp/static/uploaded/{{aFlower.photo_id}}.jpg" alt="Blog-post Thumbnail"/></a></div>
+                    <div class="post-header font-alt">
+                      <h2 class="post-title"><a href="{{aFlower.photo_id}}">{{aFlower.flower_type}}</a></h2>
+                      <div class="post-meta">?
+                      </div>
+                    </div>
+                    <div class="post-entry">
+                      <p>{{aFlower.description}}</p>
+                    </div>
+                </div>
+              </div>
+              {% endfor %}
+
+            </div>
+          </div>
+        </section>
+{% endblock %}

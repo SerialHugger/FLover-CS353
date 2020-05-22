@@ -53,6 +53,7 @@
 
         {% for flower in flowers %}
         <div class="col-sm-6 col-md-4">
+          <div class="post-more"><a class="more-link" href="{{flower.photo_id}}">Buy</a></div>
           <div class="gallery-item">
             <div class="gallery-image">
               <a class="gallery" href="theApp/static/uploaded/{{flower.photo_id}}.jpg" title="{{flower.flower_type}}">
@@ -62,8 +63,8 @@
                 </div>
               </a>
             </div>
-            <br/><h2 class="post-title">{{flower.flower_type}}</h2>
-           	{% for category in flower.categories.all %}{{category.name}} {% endfor %}
+            <br/><h2 class="post-title" >{{flower.flower_type}}</h2>
+           	  {% for category in flower.categories.all %}{{category.name}} {% endfor %}
             <div class="post-entry"><p>{{flower.description}}</p></div>
           </div>
         </div>

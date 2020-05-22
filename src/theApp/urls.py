@@ -13,8 +13,12 @@ urlpatterns = [
     path("registration", views.register, name='register'),
     path("index", views.index, name='index'),
     path("registerProduct", views.registerProduct, name='registerProduct'),
+    path("changeProduct", views.changeProduct, name='changeProduct'),
     path("easteregg", views.easteregg, name='easteregg'),
+    path("deletion", views.deleteProduct, name='deleteProduct'),
     path("products", views.products, name='products'),
+    path("about", views.about, name='about'),
+    path("<int:pk>", views.product, name='product'),
     #path("contact", views.contact, name='contact'),
     #path("blog", views.blog, name='blog'),
 
